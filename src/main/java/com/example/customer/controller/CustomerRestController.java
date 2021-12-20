@@ -1,5 +1,6 @@
 package com.example.customer.controller;
 
+import com.example.customer.controller.api.CustomerRestControllerApi;
 import com.example.customer.model.Customer;
 import com.example.customer.model.CustomerDto;
 import com.example.customer.service.CustomerService;
@@ -14,10 +15,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/customers")
 @RequiredArgsConstructor
-public class CustomerRestController {
+public class CustomerRestController implements CustomerRestControllerApi {
 
     private final CustomerService customerService;
 
+
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomer(@PathVariable("id") Long customerId) {
         if (customerId == null) {
@@ -29,6 +32,7 @@ public class CustomerRestController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<CustomerDto> saveCustomer(@RequestBody @Valid CustomerDto dto) {
         if (dto == null) {
@@ -39,6 +43,7 @@ public class CustomerRestController {
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
+    @Override
     @PatchMapping("/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable("id") Long customerId,
                                                    @RequestBody CustomerDto dto) {
@@ -55,6 +60,7 @@ public class CustomerRestController {
         return new ResponseEntity<>(customer.get(), HttpStatus.OK);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Customer> deleteCustomer(@PathVariable("id") Long customerId) {
         var customer = customerService.findById(customerId);
@@ -66,6 +72,7 @@ public class CustomerRestController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<List<Customer>> getAllCustomers() {
         var customers = customerService.getAll();
